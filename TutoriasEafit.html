@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorías EAFIT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* Encabezado de la página */
+        .header {
+            background-color: #003399;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .header-icons {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+
+        .header-icons img {
+            width: 30px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        /* Contenedor principal */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Paneles generales */
+        .panel {
+            width: 30%;
+            border-radius: 10px;
+            height: 500px;
+        }
+
+        /* Fondo para los encabezados */
+        .panel-header {
+            background-color: #ffca29;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* Fondo azul oscuro para el contenido del panel */
+        .panel-content {
+            background-color: #003366;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+            height: calc(100% - 38px);
+        }
+
+        .panel-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffffff;
+        }
+
+        .panel-content button {
+            width: 48%;
+            padding: 10px;
+            background-color: #cccccc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .panel-content button:hover {
+            background-color: #888888;
+        }
+
+        /* Panel del historial */
+        .historial {
+            background-color: #00bcd4;
+            color: white;
+            padding: 20px;
+            width: 20%;
+            border-radius: 10px;
+            height: 550px;
+        }
+
+        .historial h2 {
+            margin-top: 0;
+        }
+
+        .historial ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .historial ul li {
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .panel, .historial {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        TUTORIAS EAFIT
+        <div class="header-icons">
+            <img src="assets/notificaciones-icono.png" alt="Notificaciones">
+            <img src="assets/perfil-icono.png" alt="Perfil">
+            <img src="assets/ajustes-icono.png" alt="Ajustes">
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Panel de inicio o creación de perfil -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Inicia o crea un perfil</h2>
+            </div>
+            <div class="panel-content">
+                <input type="email" placeholder="Correo electrónico">
+                <input type="password" placeholder="Contraseña">
+                <div>
+                    <button type="submit">Log In</button>
+                    <button type="submit">Registro</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel para solicitar tutoría -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Solicita tu tutoría</h2>
+            </div>
+            <div class="panel-content">
+                <input type="text" placeholder="Materia necesaria">
+                <input type="text" placeholder="Tema específico">
+                <button type="submit">Solicitar tutoría</button>
+            </div>
+        </div>
+
+        <!-- Historial de tutorías -->
+        <div class="historial">
+            <h2>Historial tutorías</h2>
+            <ul>
+                <li>Tutoría 1</li>
+                <li>Tutoría 2</li>
+                <li>Tutoría 3</li>
+                <li>Tutoría 4</li>
+                <li>Tutoría 5</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
