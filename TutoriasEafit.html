@@ -12,7 +12,6 @@
             background-color: #f0f0f0;
         }
 
-        /* Encabezado de la página */
         .header {
             background-color: #003399;
             color: white;
@@ -35,7 +34,6 @@
             cursor: pointer;
         }
 
-        /* Contenedor principal */
         .container {
             display: flex;
             justify-content: space-between;
@@ -44,14 +42,12 @@
             padding: 20px;
         }
 
-        /* Paneles generales */
         .panel {
             width: 30%;
             border-radius: 10px;
-            height: 500px;
+            height: 600px;
         }
 
-        /* Fondo para los encabezados */
         .panel-header {
             background-color: #ffca29;
             padding: 10px;
@@ -59,7 +55,6 @@
             border-radius: 10px 10px 0 0;
         }
 
-        /* Fondo azul oscuro para el contenido del panel */
         .panel-content {
             background-color: #003366;
             padding: 20px;
@@ -67,7 +62,7 @@
             height: calc(100% - 38px);
         }
 
-        .panel-content input {
+        .panel-content input, .panel-content select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -90,7 +85,6 @@
             background-color: #888888;
         }
 
-        /* Panel del historial */
         .historial {
             background-color: #00bcd4;
             color: white;
@@ -113,6 +107,14 @@
             margin: 10px 0;
         }
 
+        .panel-content label {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: left;
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -124,7 +126,6 @@
                 margin-bottom: 20px;
             }
         }
-
     </style>
 </head>
 <body>
@@ -132,9 +133,9 @@
     <div class="header">
         TUTORIAS EAFIT
         <div class="header-icons">
-            <img src="assets/notificaciones-icono.png" alt="Notificaciones">
-            <img src="assets/perfil-icono.png" alt="Perfil">
-            <img src="assets/ajustes-icono.png" alt="Ajustes">
+            <img src="https://img.icons8.com/material-rounded/24/appointment-reminders.png" alt="Notificaciones">
+            <img src="https://img.icons8.com/material/24/person-male.png" alt="Perfil">
+            <img src="https://img.icons8.com/?size=100&id=2969&format=png&color=000000" alt="Ajustes">
         </div>
     </div>
 
@@ -145,11 +146,32 @@
                 <h2>Inicia o crea un perfil</h2>
             </div>
             <div class="panel-content">
-                <input type="email" placeholder="Correo electrónico">
-                <input type="password" placeholder="Contraseña">
+                <label for="email">Ingrese su correo electrónico</label>
+                <input type="email" id="email" placeholder="Correo electrónico">
+                
+                <label for="password">Ingrese su contraseña</label>
+                <input type="password" id="password" placeholder="Contraseña">
+                
+                <label for="confirm-password" style="display:none;" id="confirm-password-label">Confirme su contraseña</label>
+                <input type="password" id="confirm-password" placeholder="Confirmar contraseña" style="display:none;">
+                
+                <label for="role">Seleccione su rol</label>
+                <select id="role" onchange="mostrarCamposTutor()">
+                    <option value="" disabled selected>Seleccione su rol</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="tutor">Tutor</option>
+                </select>
+
+                <!-- Nuevos campos solo para el rol de Tutor -->
+                <label for="materia-dictar" style="display:none;" id="materia-dictar-label">Ingrese materia a dictar</label>
+                <input type="text" id="materia-dictar" placeholder="Materia a dictar" style="display:none;">
+                
+                <label for="nota-materia" style="display:none;" id="nota-materia-label">Nota de la materia</label>
+                <input type="number" id="nota-materia" placeholder="Nota de la materia" min="0" max="5" step="0.1" style="display:none;">
+                
                 <div>
-                    <button type="submit">Log In</button>
-                    <button type="submit">Registro</button>
+                    <button type="button" onclick="login()">Log In</button>
+                    <button type="button" onclick="register()">Registro</button>
                 </div>
             </div>
         </div>
@@ -160,24 +182,216 @@
                 <h2>Solicita tu tutoría</h2>
             </div>
             <div class="panel-content">
-                <input type="text" placeholder="Materia necesaria">
-                <input type="text" placeholder="Tema específico">
-                <button type="submit">Solicitar tutoría</button>
+                <label for="materia">Ingrese la materia</label>
+                <input type="text" id="materia" placeholder="Materia necesaria" list="materia-list">
+                <datalist id="materia-list">
+                    <option value="Matemáticas"></option>
+                    <option value="Física"></option>
+                    <option value="Programación"></option>
+                    <option value="Química"></option>
+                </datalist>
+                
+                <label for="tema">Ingrese el tema específico</label>
+                <input type="text" id="tema" placeholder="Tema específico">
+                
+                <button type="button" onclick="solicitarTutoria()">Solicitar tutoría</button>
             </div>
         </div>
 
-        <!-- Historial de tutorías -->
+        <!-- Historial de tutorías con filtro -->
         <div class="historial">
             <h2>Historial tutorías</h2>
-            <ul>
-                <li>Tutoría 1</li>
-                <li>Tutoría 2</li>
-                <li>Tutoría 3</li>
-                <li>Tutoría 4</li>
-                <li>Tutoría 5</li>
+            <label for="filtro-materia">Filtrar por materia</label>
+            <input type="text" id="filtro-materia" placeholder="Buscar materia..." oninput="filtrarHistorial()">
+            <ul id="historial-list">
+                <!-- Aquí se mostrarán las tutorías solicitadas -->
             </ul>
         </div>
     </div>
+
+    <script>
+        const confirmPasswordField = document.getElementById('confirm-password');
+        const confirmPasswordLabel = document.getElementById('confirm-password-label');
+
+        // Mostrar campos adicionales si el rol es "Tutor"
+        function mostrarCamposTutor() {
+            const role = document.getElementById('role').value;
+            const materiaDictar = document.getElementById('materia-dictar');
+            const notaMateria = document.getElementById('nota-materia');
+            const materiaDictarLabel = document.getElementById('materia-dictar-label');
+            const notaMateriaLabel = document.getElementById('nota-materia-label');
+            
+            if (role === 'tutor') {
+                materiaDictar.style.display = 'block';
+                notaMateria.style.display = 'block';
+                materiaDictarLabel.style.display = 'block';
+                notaMateriaLabel.style.display = 'block';
+            } else {
+                materiaDictar.style.display = 'none';
+                notaMateria.style.display = 'none';
+                materiaDictarLabel.style.display = 'none';
+                notaMateriaLabel.style.display = 'none';
+            }
+        }
+
+        function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const role = document.getElementById('role').value;
+            const materiaDictar = document.getElementById('materia-dictar').value;
+            const notaMateria = parseFloat(document.getElementById('nota-materia').value);
+            
+            if (!email || !password || !confirmPassword || !role) {
+                alert("Por favor complete todos los campos");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+
+            let data = { email, password, role };
+
+            if (role === 'tutor') {
+                if (!materiaDictar || isNaN(notaMateria)) {
+                    alert("Por favor complete los campos de materia y nota si es tutor");
+                    return;
+                }
+                
+                if (notaMateria < 4.5 || notaMateria > 5.0) {
+                    alert("El usuario no cumple con la nota mínima requerida de 4.5");
+                    return;
+                }
+
+                // Añadir los campos específicos del tutor
+                data.materia = materiaDictar;
+                data.calificacion = notaMateria;
+            }
+
+            fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al registrar el usuario');
+            });
+        }
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Inicio de sesión exitoso como ${data.role}`);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al iniciar sesión');
+            });
+        }
+
+        function solicitarTutoria() {
+            const materia = document.getElementById('materia').value;
+            const tema = document.getElementById('tema').value;
+
+            if (!materia || !tema) {
+                alert("Por favor complete los campos de materia y tema");
+                return;
+            }
+
+            fetch('http://localhost:3000/solicitar-tutoria', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    materia: materia,
+                    tema: tema,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error al solicitar tutoría:', error);
+                alert('Ocurrió un error al solicitar la tutoría');
+            });
+        }
+
+        function filtrarHistorial() {
+            const filtro = document.getElementById('filtro-materia').value.toLowerCase();
+            const historialList = document.getElementById('historial-list');
+            const items = historialList.getElementsByTagName('li');
+
+            for (let i = 0; i < items.length; i++) {
+                const materia = items[i].textContent.toLowerCase();
+                if (materia.includes(filtro)) {
+                    items[i].style.display = '';
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+        }
+
+        document.querySelector('[onclick="register()"]').addEventListener('click', function() {
+            confirmPasswordField.style.display = 'block';
+            confirmPasswordLabel.style.display = 'block';
+        });
+
+        document.querySelector('[onclick="login()"]').addEventListener('click', function() {
+            confirmPasswordField.style.display = 'none';
+            confirmPasswordLabel.style.display = 'none';
+        });
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+
+        socket.on('cargar-tutorias', (tutorias) => {
+            const historial = document.getElementById('historial-list');
+            historial.innerHTML = ''; 
+            
+            tutorias.forEach(tutoria => {
+                const nuevaTutoria = document.createElement('li');
+                nuevaTutoria.textContent = `Materia: ${tutoria.materia}, Tema: ${tutoria.tema}`;
+                historial.appendChild(nuevaTutoria);
+            });
+        });
+
+        socket.on('nueva-tutoria', (tutoria) => {
+            const historial = document.getElementById('historial-list');
+            const nuevaTutoria = document.createElement('li');
+            nuevaTutoria.textContent = `Materia: ${tutoria.materia}, Tema: ${tutoria.tema}`;
+            historial.appendChild(nuevaTutoria);
+        });
+    </script>
 
 </body>
 </html>
